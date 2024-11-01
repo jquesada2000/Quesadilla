@@ -1,0 +1,12 @@
+Package: Quesadilla
+Type: Package
+Title: Functions for Biostatistics 
+Version: 0.1.0
+Author: person("Jose Antonio", "Quesada", email = "jquesada@umh.es", role = c("aut", "cre"))
+Maintainer: The package maintainer <jquesada@umh.es>
+Description: This package contains functions used in biostatistics, from the book 'Basic and Advanced Biostatistics with R'
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: plyr ,  pROC,   nortest
+RoxygenNote: 7.3.2
