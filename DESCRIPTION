@@ -4,7 +4,7 @@ Title: Functions for Biostatistics
 Version: 0.1.0
 Author: person("Jose Antonio", "Quesada", email = "jquesada@umh.es", role = c("aut", "cre"))
 Maintainer: The package maintainer <jquesada@umh.es>
-Description: This package contains functions used in biostatistics, from the book 'Basic and Advanced Biostatistics with R'
+Description: This package contains functions used in biostatistics, from the book 'Basic and Advanced Biostatistics with R.The file Libro.html contains the R codes for the book. Available at https://github.com/jquesada2000/Quesadilla/blob/main/libro.html '
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
