@@ -10,3 +10,5 @@ Encoding: UTF-8
 LazyData: true
 Imports: plyr ,  pROC,   nortest
 RoxygenNote: 7.3.2
+VignetteBuilder: knitr
+Suggests: knitr, rmarkdown
