@@ -1,0 +1,7 @@
+pandoc: '3.2'
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  libro: libro.html
+last_built: 2024-11-30T08:57Z
+
