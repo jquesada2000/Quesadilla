@@ -55,19 +55,22 @@ devtools::install()
 # ------------------
 
 # crea la carpeta vignettes y el archivo libro.Rmd
-usethis::use_vignette("libro")
+usethis::use_vignette("libro2")
 
 # crea la vignette
 devtools::build_vignettes()
 
-
-devtools::install_github("jquesada2000/Quesadilla")
+remove.packages("Quesadilla")
+devtools::install_github("jquesada2000/Quesadilla", build_vignettes = TRUE,force = TRUE)
 
 
 library(Quesadilla)
 help("test.cat")
 
 browseVignettes("Quesadilla")
+
+
+pkgbuild::check_build_tools(debug = TRUE)
 
 devtools::check() # Verifica que no haya errores
 

@@ -1,0 +1,1575 @@
+## ----setup, include = FALSE---------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,  # Anchura de las figuras
+  fig.height = 4, # Altura de las figuras
+  fig.retina = 2, # Resolución para pantallas de alta densidad
+  out.width = "100%" # Tamaño relativo en el documento final
+)
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# library(MixAll)
+# data(DebTrivedi)
+# 
+# dataset0 <- DebTrivedi
+# 
+# names(dataset0)
+# 
+# 
+# dataset <- dataset0[,-c(2:5)]
+# names(dataset)
+# 
+# dataset$age <- dataset$age*10
+# 
+# # test distribucion -----------------------------
+# 
+# x <- dataset$ofp
+# 
+# hist(x)
+# mean(x)
+# min(x)
+# 
+# 
+# library(vcd)
+# 
+# gf = goodfit(x,type= "poisson",method= "ML")
+# summary(gf)
+# 
+# 
+# gf2 = goodfit(x,type= "nbinomial",method= "ML")
+# summary(gf2)
+# 
+# 
+# library(gofgamma) # no admite cero la gamma
+# test.KS(x, boot = 500, alpha = 0.05)
+# 
+# # -----------------------------------------------
+# 
+# # change negative values to positive
+# dataset$faminc <- abs(dataset$faminc)
+# 
+# 
+# fit.sat<-glm(ofp ~
+# 
+#               hosp +
+#               health +
+#               numchron +
+#               adldiff +
+#               region +
+#               age +
+#               black +
+#               gender +
+#               married +
+#               school +
+#               faminc +
+#               employed +
+#               privins +
+#               medicaid
+# 
+#             ,family=poisson, data=dataset)
+# 
+# 
+# vif(fit.sat)
+# 
+# 
+# drop1(fit.sat,test="Chisq")
+# 
+# 
+# 
+# fit1 <- glm(ofp ~
+# 
+#                hosp +
+#                health +
+#                numchron +
+#                adldiff +
+#                region +
+#                age +
+#                black +
+#                gender +
+#                married +
+#                school +
+#                #faminc +
+#                employed +
+#                privins +
+#                medicaid
+# 
+#              ,family=poisson, data=dataset)
+# 
+# 
+# drop1(fit1,test="Chisq")
+# 
+# 
+# # Sobredispersion
+# Phi <- fit1$deviance / (nrow(dataset)-length(fit1$coefficients))
+# Phi
+# 
+# 
+# library(DAMisc)
+# poisGOF(fit1)
+# 
+# 
+# 
+# fit1.q.sat <- glm(ofp ~
+# 
+#               hosp +
+#               health +
+#               numchron +
+#               adldiff +
+#               region +
+#               age +
+#               black +
+#               gender +
+#               married +
+#               school +
+#               #faminc +
+#               employed +
+#               privins +
+#               medicaid
+# 
+#             ,family=quasi(link="log",variance="mu"), data=dataset)
+# 
+# 
+# fit1.q <- glm(ofp ~
+# 
+#               hosp +
+#               health +
+#               numchron +
+#               #adldiff +
+#               region +
+#               #age +
+#               #black +
+#               gender +
+#               #married +
+#               school +
+#               #faminc +
+#               #employed +
+#               privins +
+#               medicaid
+# 
+#             ,family=quasi(link="log",variance="mu"), data=dataset)
+# 
+# 
+# drop1(fit1.q,test="Chisq")
+# 
+# summary(fit1.q)
+# 
+# 
+# 
+# marco <- data.frame(coefficients(summary(fit1.q)))
+# labels<-rownames(marco)
+# bethas<-marco$Estimate
+# error<-marco$Std..Error
+# valorp<-marco$Pr...t..
+# 
+# RR<-round(exp(bethas),2)
+# aCI<-round(exp(bethas-1.96*error),2)
+# bCI<-round(exp(bethas+1.96*error),2)
+# (res_fit1<-data.frame(labels,RR=RR,IC=paste("(",aCI,"-",bCI,")",sep=""), pvalue=round(valorp,3)))
+# 
+# 
+# dataset$health
+# 
+# dataset$health <- relevel(dataset$health, ref = "excellent")
+# dataset$gender <- relevel(dataset$gender, ref = "male")
+# 
+# 
+# fit1.q <- glm(ofp ~
+# 
+#                 hosp +
+#                 health +
+#                 numchron +
+#                 #adldiff +
+#                 region +
+#                 #age +
+#                 #black +
+#                 gender +
+#                 #married +
+#                 school +
+#                 #faminc +
+#                 #employed +
+#                 privins +
+#                 medicaid
+# 
+#               ,family=quasi(link="log",variance="mu"), data=dataset)
+# 
+# 
+# marco <- data.frame(coefficients(summary(fit1.q)))
+# labels<-rownames(marco)
+# bethas<-marco$Estimate
+# error<-marco$Std..Error
+# valorp<-marco$Pr...t..
+# 
+# RR<-round(exp(bethas),2)
+# aCI<-round(exp(bethas-1.96*error),2)
+# bCI<-round(exp(bethas+1.96*error),2)
+# (res_fit1<-data.frame(labels,RR=RR,IC=paste("(",aCI,"-",bCI,")",sep=""), pvalue=round(valorp,3)))
+# 
+# 
+# dataset$region
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# library(car)
+# library(MixAll)
+# 
+# 
+# data(DebTrivedi)
+# 
+# dataset0 <- DebTrivedi
+# 
+# names(dataset0)
+# 
+# 
+# dataset <- dataset0[,-c(2:5)]
+# names(dataset)
+# 
+# dataset$age <- dataset$age*10
+# 
+# 
+# hist(dataset$ofp)
+# table(dataset$ofp)
+# 
+# sum(dataset$ofp == 0)*100/nrow(dataset)
+# 
+# 
+# 
+# library(pscl)
+# 
+# 
+# fit.hurdle.sat <- hurdle(ofp ~
+# 
+#                        hosp +
+#                        health +
+#                        numchron +
+#                        adldiff +
+#                        region +
+#                        age +
+#                        black +
+#                        gender +
+#                        married +
+#                        school +
+#                        faminc +
+#                        employed +
+#                        privins +
+#                        medicaid
+# 
+#                      ,dist="poisson",zero.dist="binomial", data=dataset)
+# 
+# 
+# drop1(fit.hurdle.sat,test="Chisq")
+# 
+# summary(fit.hurdle.sat)
+# 
+# 
+# 
+# fit1.hurdle <- hurdle(ofp ~
+# 
+#                            hosp +
+#                            health +
+#                            numchron +
+#                            adldiff +
+#                            region +
+#                            age +
+#                            black +
+#                            gender +
+#                            married +
+#                            school +
+#                            #faminc +
+#                            #employed +
+#                            privins +
+#                            medicaid
+# 
+#                          ,dist="poisson",zero.dist="binomial", data=dataset)
+# 
+# 
+# drop1(fit1.hurdle,test="Chisq")
+# 
+# 
+# summary(fit1.hurdle)
+# 
+# 
+#   AIC(fit1.hurdle)
+# 
+# 
+# 
+#   dataset$health <- relevel(dataset$health, ref = "excellent")
+#   dataset$gender <- relevel(dataset$gender, ref = "male")
+# 
+# 
+#   fit2.hurdle <- hurdle(ofp ~
+# 
+#                           hosp +
+#                           health +
+#                           numchron +
+#                           adldiff +
+#                           region +
+#                           age +
+#                           #black +
+#                           #gender +
+#                           married +
+#                           school +
+#                           #faminc +
+#                           #employed +
+#                           privins +
+#                           medicaid |
+# 
+#                           hosp +
+#                           health +
+#                           numchron +
+#                           #adldiff +
+#                           #region +
+#                           age +
+#                           black +
+#                           gender +
+#                           married +
+#                           school +
+#                           #faminc +
+#                           #employed +
+#                           privins +
+#                           medicaid
+# 
+#                         ,dist="poisson",zero.dist="binomial", data=dataset)
+# 
+# 
+# 
+#   AIC(fit1.hurdle,fit2.hurdle)
+# 
+#   summary(fit2.hurdle)
+# 
+# 
+# 
+# 
+#   marco.pois <- data.frame(coefficients(summary(fit2.hurdle))$count)
+#   marco.bin <- data.frame(coefficients(summary(fit2.hurdle))$zero)
+# 
+# 
+#   labels<-rownames(marco.pois)
+#   bethas<-marco.pois$Estimate
+#   error<-marco.pois$Std..Error
+#   valorp<-marco.pois$Pr...z..
+# 
+#   RR<-round(exp(bethas),2)
+#   aCI<-round(exp(bethas-1.96*error),2)
+#   bCI<-round(exp(bethas+1.96*error),2)
+#   (res_fit1<-data.frame(labels,RR=RR,IC=paste("(",aCI,"-",bCI,")",sep=""), pvalue=round(valorp,3)))
+# 
+# 
+#   labels2 <-rownames(marco.bin)
+#   bethas2 <-marco.bin$Estimate
+#   error2 <-marco.bin$Std..Error
+#   valorp2 <-marco.bin$Pr...z..
+# 
+#   OR <-round(exp(bethas2),2)
+#   aCI2 <-round(exp(bethas2-1.96*error2),2)
+#   bCI2 <-round(exp(bethas2+1.96*error2),2)
+#   (res_fit2<-data.frame(labels2,OR=OR,IC=paste("(",aCI2,"-",bCI2,")",sep=""), pvalue=round(valorp2,3)))
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# library(asaur)
+# 
+# data("pharmacoSmoking")
+# head(pharmacoSmoking)
+# 
+# names(pharmacoSmoking)
+# 
+# 
+# dataset <- pharmacoSmoking[,-c(1,2,11,12)]
+# 
+# names(dataset)
+# 
+# ## logistic model --------------------------------
+# 
+# fit.bin <- glm(relapse ~
+#                    grp +
+#                    age
+#                    #gender +
+#                    #race +
+#                    #employment
+#                    #yearsSmoking +
+#                    #levelSmoking +
+#                    #priorAttempts
+#                    #longestNoSmoke
+#                  , family=binomial(logit), data=dataset)
+# 
+# 
+# 
+# marco <- data.frame(coefficients(summary(fit.bin)))
+# labels <- rownames(marco)
+# bethas <- marco$Estimate
+# error <- marco$Std..Error
+# valorp <- marco$Pr...z..
+# 
+# OR <- round(exp(bethas),2)
+# aCI <- round(exp(bethas-1.96*error),2)
+# bCI <- round(exp(bethas+1.96*error),2)
+# 
+# (res_fit.bin<-data.frame(labels,OR=OR,IC=paste("(",aCI,"-",bCI,")",sep=""), pvalue=round(valorp,3)))
+# 
+# 
+# 
+# ## poisson model with robust variance -------------------
+# 
+# library(sandwich) # to get robust estimators
+# library(lmtest) # to test coefficients
+# 
+# 
+# fit.pois <- glm(relapse ~
+#                   grp +
+#                   age
+# 
+#                 , family = poisson(link = "log"), data = dataset)
+# 
+# 
+# 
+# fit.pois.robust <- coeftest(fit.pois, vcov = sandwich)
+# 
+# 
+# labels2 <- rownames(fit.pois.robust)
+# bethas2 <- fit.pois.robust[,1]
+# error2 <- fit.pois.robust[,2]
+# valorp2 <- round(fit.pois.robust[,4],3)
+# 
+# RR <- round(exp(bethas2),2)
+# aCI2 <- round(exp(bethas2 - 1.96*error2),2)
+# bCI2 <- round(exp(bethas2 + 1.96*error2),2)
+# 
+# (res_fit.pois <- data.frame(labels,RR=RR,IC=paste("(",aCI2,"-",bCI2,")",sep=""), pvalue=round(valorp2,3)))
+# 
+# 
+# 
+# table(dataset$relapse)
+# 
+# 
+# 
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# library(MASS)
+# library(car)
+# data("Pima.te")
+# data("Pima.tr")
+# 
+# 
+# dataset <- rbind(Pima.te,Pima.tr)
+# dim(dataset)
+# 
+# head(dataset)
+# 
+# 
+# hist(dataset$ped)
+# 
+# 
+# min(dataset$ped)
+# 
+# 
+# 
+# 
+# # test gamma ------------------------------------------
+# library(vcd)
+# 
+# fitdistr(dataset$ped, "gamma")
+# 
+# plot(density(dataset$ped))
+# 
+# med <- mean(dataset$ped, na.rm=T)
+# sdd <- sd(dataset$ped, na.rm=T)
+# 
+# # shape=alfa; scale=beta
+# 
+# ks.test ( dataset$ped, "pgamma", shape=2.6 ,scale= 5.2, exact = FALSE)
+# ks.test ( dataset$ped, "pgamma",  exact = FALSE)
+# 
+# # ---------------------------------------------------------
+# 
+# 
+# 
+# 
+# fit.gamma.sat <- glm(ped ~
+# 
+#                   type +
+#                   npreg +
+#                   glu +
+#                   bp +
+#                   skin +
+#                   bmi +
+#                   age
+# 
+#                 , family=Gamma (link="log"),data=dataset)
+# 
+# vif(fit.gamma.sat)
+# drop1(fit.gamma.sat,test="Chisq")
+# 
+# 
+# 
+# fit1.gamma <- glm(ped ~
+# 
+#                        type +
+#                        #npreg
+#                        glu
+#                        #bp
+#                        #skin
+#                        #bmi
+#                        #age
+# 
+#                      , family=Gamma (link="log"),data=dataset)
+# 
+# 
+# #drop1(fit1.gamma,test="Chisq")
+# summary(fit1.gamma)
+# 
+# # --------------------------------------------------
+# library(chest)
+# 
+# # list of possibly confounding variables
+# vlist<-c("npreg", "glu", "bp", "skin","age")
+# 
+# 
+# results_grp <- chest_glm(crude = "ped ~ type + bmi", xlist = vlist, data = dataset, family = Gamma (link="log"))
+# 
+# 
+# chest_plot(results_grp)
+# # ---------------------------------------------------
+# 
+# # bondad de ajuste
+# res <- summary(fit1.gamma)
+# (devian <- res$deviance)
+# dff <- res$df.residual
+# pchisq(devian,dff) # DEVIANCE=1187, pvalor = 0 ; modelo ajusta bien a los datos
+# 
+# 
+# 
+# # interpretacion
+# data.frame( exp(coef(fit.step.gama)))  # para estreñimiento = 0.9069
+# # si estreñimiento=si la media aritmetica de EVA original es 0.9069 veces mayor comparado con estreñimiento=no
+# # es lo mismo que EVA se reduce un 9,3% en los estreñimiento=si
+# 
+# 
+# 
+# # DIAGNOSIS DEL MODELO GAMMA
+# library(boot)
+# fit.gama.diag <- glm.diag(fit1.gamma)
+# glm.diag.plots(fit1.gamma, fit.gama.diag)
+# 
+# (SSE.gama.log <- sum(resid(fit.step.gama))^2)
+# # -------------------------------------------------------
+# 
+# 
+# 
+# 
+# 
+# ## resultados --------------------------------------------
+# marco <- data.frame(coefficients(summary.glm(fit1.gamma)))
+# labels <- rownames(marco)
+# bethas <- marco$Estimate
+# error <- marco$Std..Error
+# zetas <- marco$t.value
+# valorp <- marco$Pr...t..
+# RR <- round(exp(bethas),3)
+# AIC <- round(exp(bethas-1.96*error),3)
+# BIC <- round(exp(bethas+1.96*error),3)
+# (res_fit1 <- data.frame(labels,beta=round(bethas,4), expBetas=RR,IC=paste("(",AIC,"-",BIC,")",sep=""), pvalor=round(valorp,3)))
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# library(NHSRdatasets)
+# 
+# 
+# data("LOS_model")
+# 
+# dataset <- as.data.frame(LOS_model)
+# 
+# head(dataset,20)
+# 
+# 
+# dataset$Death <- factor(dataset$Death, labels = c("No","Yes"))
+# 
+# 
+# library(lme4)
+# 
+# dataset$Age_st <- scale(dataset$Age)
+# 
+# fit0.glm <- glm(LOS ~
+# 
+#                      Age_st +
+#                      Death
+# 
+#                    , family=poisson, data=dataset)
+# 
+# 
+# summary(fit0.glm)
+# 
+# 
+# 
+# fit1.glmm <- glmer(LOS ~
+# 
+#                         Age_st +
+#                         Death +
+#                         (1|Organisation)
+# 
+#                         , family=poisson, data=dataset)
+# 
+# 
+# summary(fit1.glmm)
+# 
+# 
+# 
+# 
+# AIC(fit0.glm,fit1.glmm)
+# 
+# 
+# 
+# 
+# plot(fitted(fit1.glmm),resid(fit1.glmm),xlab="Fitted values",ylab="Residuals")
+# abline(h=0, lty=3)
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# library(medicaldata)
+# data("licorice_gargle")
+# 
+# names(licorice_gargle)
+# 
+# dataset0 <- licorice_gargle[,-c(5,9,10,12,13,15,17,19)]
+# names(dataset0)
+# 
+# head(dataset0)
+# 
+# dataset0$preOp_gender <- factor(dataset0$preOp_gender , labels = c("Male","Female"))
+# dataset0$preOp_asa <- factor(dataset0$preOp_asa , labels = c("normal healthy","mild systemic disease","severe systemic disease"))
+# dataset0$preOp_smoking <- factor(dataset0$preOp_smoking , labels = c("Current","Past","Never"))
+# #dataset0$preOp_pain <- factor(dataset0$preOp_pain , labels = c("No","Yes"))
+# dataset0$treat <- factor(dataset0$treat , labels = c("Sugar 5g","Licorice 0.5g"))
+# 
+# dataset0$cough_30min[dataset0$pacu30min_cough >0 ] <- 1
+# dataset0$cough_30min[dataset0$pacu30min_cough == 0 ] <- 0
+# 
+# dataset0$cough_90min[dataset0$pacu90min_cough >0 ] <- 1
+# dataset0$cough_90min[dataset0$pacu90min_cough == 0 ] <- 0
+# 
+# dataset0$cough_4h[dataset0$postOp4hour_cough  >0 ] <- 1
+# dataset0$cough_4h[dataset0$postOp4hour_cough  == 0 ] <- 0
+# 
+# dataset0$cough_1mor[dataset0$pod1am_cough  >0 ] <- 1
+# dataset0$cough_1mor[dataset0$pod1am_cough  == 0 ] <- 0
+# 
+# # dataset0$cough_30min <- factor(dataset0$cough_30min , labels = c("No","Yes"))
+# # dataset0$cough_90min <- factor(dataset0$cough_90min , labels = c("No","Yes"))
+# # dataset0$cough_4h <- factor(dataset0$cough_4h , labels = c("No","Yes"))
+# # dataset0$cough_1mor <- factor(dataset0$cough_1mor , labels = c("No","Yes"))
+# 
+# dataset <- dataset0[,-c(8:11)]
+# names(dataset)
+# 
+# head(dataset)[,4:11]
+# 
+# 
+# dataset$ID <- seq(1:nrow(dataset))
+# 
+# 
+# library(reshape2)
+# 
+# # ID variables - all the variables to keep but not split apart on
+# idvars <- c("ID","preOp_gender","preOp_asa","preOp_calcBMI","preOp_age","preOp_smoking","treat")
+# 
+# # The source columns
+# measurevars <- c("cough_30min", "cough_90min", "cough_4h","cough_1mor" )
+# 
+# dataset.long <- melt(dataset, id.vars=idvars, measure.vars=measurevars,
+# 
+#                   variable.name="time", value.name="cough")
+# 
+# 
+# 
+# dim(dataset)
+# dim(dataset.long)
+# 
+# 
+# dataset.long <- dataset.long[order(dataset.long$ID),]
+# row.names(dataset.long) <- NULL
+# 
+# dataset.long[1:10,c(1,5:9)]
+# 
+# 
+# 
+# 
+# library(lme4)
+# 
+# 
+# 
+# fit0.glm <- glm(cough ~
+# 
+#                   preOp_gender +
+#                   preOp_asa +
+#                   preOp_calcBMI +
+#                   preOp_age +
+#                   preOp_smoking +
+#                   treat +
+#                   time +
+#                   treat*time
+# 
+#                 , family=binomial(logit), data=dataset.long)
+# 
+# 
+# summary(fit0.glm)
+# 
+# 
+# 
+# fit1.glmm <- glmer(cough ~
+# 
+#                      preOp_gender +
+#                      preOp_asa +
+#                      preOp_calcBMI +
+#                      preOp_age +
+#                      preOp_smoking +
+#                      treat +
+#                      time +
+#                      treat*time +
+#                      (1|ID)
+# 
+#                    , family=binomial, data=dataset.long,
+#                      glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+# 
+# summary(fit1.glmm)
+# 
+# 
+# 
+# 
+# AIC(fit0.glm,fit1.glmm)
+# 
+# drop1(fit1.glmm,test="Chisq")
+# 
+# 
+# 
+# fit2.glmm <- glmer(cough ~
+# 
+#                      #preOp_gender +
+#                      #preOp_asa +
+#                      #preOp_calcBMI +
+#                      preOp_age +
+#                      #preOp_smoking +
+#                      treat +
+#                      time +
+#                      #treat*time +
+#                      (1|ID)
+# 
+#                    , family=binomial, data=dataset.long,
+#                    glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)), nAGQ=5)
+# 
+# 
+# drop1(fit2.glmm,test="Chisq")
+# 
+# summary(fit2.glmm)
+# 
+# 
+# ## resultados --------------------------------------------
+# marco <- data.frame(coefficients(summary(fit2.glmm)))
+# labels <- rownames(marco)
+# bethas <- marco$Estimate
+# error <- marco$Std..Error
+# valorp <- marco[,4]
+# 
+# OR <- round(exp(bethas),3)
+# AIC <- round(exp(bethas-1.96*error),3)
+# BIC <- round(exp(bethas+1.96*error),3)
+# (res_fit1 <- data.frame(labels,beta=round(bethas,4), OR=OR,IC=paste("(",AIC,"-",BIC,")",sep=""), pvalor=round(valorp,3)))
+# 
+# 
+# # BONDAD DE AJUSTE---------------------------------------------
+# 
+# plot(fitted(fit2.glmm),resid(fit2.glmm),xlab="Fitted values",ylab="Residuals")
+# abline(h=0, lty=3)
+# 
+# 
+# # otra forma---
+# my.res <- residuals(fit2.glmm, type="pearson")
+# my.fit <- fitted(fit2.glmm)
+# 
+# par(mfrow = c(3,2))
+# plot(my.res ~ my.fit)
+# abline(h=0, lty=3)
+# 
+# plot(fit2.glmm@frame$preOp_age, my.res)
+# abline(h=0, lty=3)
+# 
+# 
+# plot(fit2.glmm@frame$treat, my.res)
+# abline(h=0, lty=3)
+# 
+# 
+# plot(fit2.glmm@frame$time, my.res)
+# abline(h=0, lty=3)
+# 
+# 
+# plot(fit2.glmm@frame$ID, my.res)
+# abline(h=0, lty=3)
+# # ---------------------------------------------------------------
+# 
+# 
+# 
+# 
+# test.cat(dataset.long$treat,dataset.long$cough )
+# 
+# 
+# var.time <- levels(dataset.long$time)
+#   xx <- NULL
+#   for(j in var.time){
+# 
+#     sub <- dataset.long[dataset.long$time == j,]
+# 
+#     xx[[j]] <- test.cat(sub$treat,sub$cough )
+# 
+#   }
+#   xx
+# 
+# 
+#   test.cat(dataset.long$time,dataset.long$cough )
+# 
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# 
+# library(MixAll)
+# data(DebTrivedi)
+# 
+# dataset0 <- DebTrivedi
+# 
+# names(dataset0)
+# 
+# 
+# dataset <- dataset0[,-c(2:5)]
+# names(dataset)
+# 
+# dataset$age <- dataset$age*10
+# 
+# 
+# 
+# fit1.q <- glm(ofp ~
+# 
+#                 hosp +
+#                 health +
+#                 numchron +
+#                 #adldiff +
+#                 region +
+#                 #age +
+#                 #black +
+#                 gender +
+#                 #married +
+#                 school +
+#                 #faminc +
+#                 #employed +
+#                 privins +
+#                 medicaid
+# 
+#               ,family=quasi(link="log",variance="mu"), data=dataset)
+# 
+# 
+# 
+# library(mgcv)
+# 
+# 
+# fit1.gam <- gam(ofp ~
+# 
+#                 hosp +
+#                 health +
+#                 numchron +
+#                 #adldiff +
+#                 region +
+#                 #age +
+#                 #black +
+#                 gender +
+#                 #married +
+#                 s(school) +
+#                 #faminc +
+#                 #employed +
+#                 privins +
+#                 medicaid
+# 
+#               ,family=poisson, data=dataset)
+# 
+# 
+# anova(fit1.q,fit1.gam, test="F")
+# 
+# 
+# summary(fit1.gam)
+# 
+# plot.gam(fit1.gam, select = 1,shade = TRUE,
+#          xlab = "Years of education", ylab="log-physician visits")
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# library(NHSRdatasets)
+# 
+# 
+# data("LOS_model")
+# 
+# dataset <- as.data.frame(LOS_model)
+# 
+# head(dataset,20)
+# 
+# 
+# dataset$Death <- factor(dataset$Death, labels = c("No","Yes"))
+# dataset$Age_st <- scale(dataset$Age)
+# 
+# 
+# 
+# library(mgcv)
+# 
+# 
+# 
+# fit1.gamm <- gamm(LOS ~
+# 
+#                   s(Age_st) +
+#                   Death
+# 
+#                 , family=poisson, random = list(Organisation = ~ 1), data=dataset)
+# 
+# 
+# 
+# summary(fit1.gamm$gam)
+# 
+# summary(fit1.gamm$lme)
+# 
+# 
+# 
+# 
+#  plot.gam(fit1.gamm$gam, shade = TRUE,
+#           xlab = "Age_st", ylab="log-physician visits")
+# 
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# library(medicaldata)
+# data("licorice_gargle")
+# 
+# names(licorice_gargle)
+# 
+# dataset0 <- licorice_gargle[,-c(5,9,10,12,13,15,17,19)]
+# names(dataset0)
+# 
+# head(dataset0)
+# 
+# dataset0$preOp_gender <- factor(dataset0$preOp_gender , labels = c("Male","Female"))
+# 
+# dataset0$preOp_asa <- factor(dataset0$preOp_asa , labels = c("normal healthy","mild systemic disease","severe systemic disease"))
+# 
+# dataset0$preOp_smoking <- factor(dataset0$preOp_smoking , labels = c("Current","Past","Never"))
+# 
+# #dataset0$preOp_pain <- factor(dataset0$preOp_pain , labels = c("No","Yes"))
+# dataset0$treat <- factor(dataset0$treat , labels = c("Sugar 5g","Licorice 0.5g"))
+# 
+# dataset0$cough_30min[dataset0$pacu30min_cough >0 ] <- 1
+# dataset0$cough_30min[dataset0$pacu30min_cough == 0 ] <- 0
+# 
+# dataset0$cough_90min[dataset0$pacu90min_cough >0 ] <- 1
+# dataset0$cough_90min[dataset0$pacu90min_cough == 0 ] <- 0
+# 
+# dataset0$cough_4h[dataset0$postOp4hour_cough  >0 ] <- 1
+# dataset0$cough_4h[dataset0$postOp4hour_cough  == 0 ] <- 0
+# 
+# dataset0$cough_1mor[dataset0$pod1am_cough  >0 ] <- 1
+# dataset0$cough_1mor[dataset0$pod1am_cough  == 0 ] <- 0
+# 
+# 
+# dataset <- dataset0[,-c(8:11)]
+# names(dataset)
+# 
+# head(dataset)[,4:11]
+# 
+# 
+# dataset$ID <- seq(1:nrow(dataset))
+# 
+# 
+# library(reshape2)
+# 
+# # ID variables - all the variables to keep but not split apart on
+# idvars <- c("ID","preOp_gender","preOp_asa","preOp_calcBMI","preOp_age","preOp_smoking","treat")
+# 
+# # The source columns
+# measurevars <- c("cough_30min", "cough_90min", "cough_4h","cough_1mor" )
+# 
+# dataset.long <- melt(dataset, id.vars=idvars, measure.vars=measurevars,
+# 
+#                      variable.name="time", value.name="cough")
+# 
+# dim(dataset)
+# dim(dataset.long)
+# 
+# 
+# dataset.long <- dataset.long[order(dataset.long$ID),]
+# row.names(dataset.long) <- NULL
+# 
+# dataset.long[1:10,c(1,5:9)]
+# 
+# 
+# library(mgcv)
+# 
+# fit2.gamm <- gamm(cough ~
+# 
+#                      #preOp_gender +
+#                      preOp_asa +
+#                      #preOp_calcBMI +
+#                      s(preOp_age) +
+#                      #preOp_smoking +
+#                      treat +
+#                      time
+# 
+#                    , family=binomial, random = list(ID = ~ 1), data=dataset.long)
+# 
+# 
+# 
+# summary(fit2.gamm$gam)
+# 
+# summary(fit2.gamm$lme)
+# 
+# 
+# plot.gam(fit2.gamm$gam, shade = TRUE,
+#          xlab = "Age", ylab="logit-prob cough")
+# 
+# 
+# 
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# library(survival)
+# data("cancer")
+# 
+# dataset <- colon
+# 
+# dataset$sex <- factor(dataset$sex, labels = c("Female","Male"))
+# dataset$perfor   <- factor(dataset$perfor  , labels = c("No","Yes"))
+# dataset$adhere   <- factor(dataset$adhere  , labels = c("No","Yes"))
+# dataset$differ   <- factor(dataset$differ  , labels = c("well","moderate","poor"))
+# dataset$surg  <- factor(dataset$surg , labels = c("Short","Long"))
+# 
+# 
+# fit.cox <- coxph( Surv(time, status) ~
+# 
+#                        rx +
+#                        nodes +
+#                        extent +
+#                        surg +
+#                        obstruct
+# 
+#                      , data = dataset)
+# 
+# 
+# fit.cox.tt <- coxph( Surv(time, status) ~
+# 
+#                     rx +
+#                     nodes +
+#                     extent +
+#                     surg +
+#                     obstruct +
+#                     tt(obstruct) ,
+# 
+#                      tt=function(x,t,...) x*log(t)
+# 
+#                     , data = dataset)
+# 
+# summary(fit.cox.tt)
+# 
+# cox.zph(fit.cox.tt)
+# 
+# 
+# 
+# res.schoenfeld <- cox.zph(fit.cox, transform = function(x) log(x))
+# 
+# plot(res.schoenfeld)
+# abline(coef(fit.cox.tt)[c(6,7)],col="red" )
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# 
+# library(survival)
+# data(cancer)
+# 
+# cancer$status <- recode(cancer$status, "1=0;2=1")
+# 
+# 
+# dataset <- cancer[complete.cases(cancer),]
+# dim(dataset)
+# 
+# 
+# fit <- survreg( Surv(time, status) ~
+# 
+#                    age +
+#                    sex +
+#                    ph.ecog +
+#                    ph.karno +
+#                    meal.cal +
+#                    wt.loss
+# 
+#                  , data = dataset)
+# 
+# 
+# 
+# 
+# dataset$pred.time <- round(predict(fit),0)
+# head(dataset)
+# 
+# 
+# 
+# predict(fit, newdata = list(age=50,sex=1,ph.ecog=0,ph.karno=50,meal.cal=1000,wt.loss=10))
+# 
+# 
+# predict(fit, newdata = list(age=70,sex=1,ph.ecog=4,ph.karno=10,meal.cal=600,wt.loss=20))
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# library(survival)
+# data("cancer")
+# 
+# dataset <- colon
+# 
+# dataset$sex <- factor(dataset$sex, labels = c("Female","Male"))
+# dataset$obstruct  <- factor(dataset$obstruct , labels = c("No","Yes"))
+# dataset$perfor   <- factor(dataset$perfor  , labels = c("No","Yes"))
+# dataset$adhere   <- factor(dataset$adhere  , labels = c("No","Yes"))
+# dataset$differ   <- factor(dataset$differ  , labels = c("well","moderate","poor"))
+# dataset$surg  <- factor(dataset$surg , labels = c("Short","Long"))
+# 
+# 
+# 
+# fit.cox <- coxph( Surv(time, status) ~
+# 
+#                     rx +
+#                     obstruct +
+#                     nodes +
+#                     extent +
+#                     surg
+# 
+#                   , data = dataset)
+# 
+# summary(fit.cox)
+# 
+# cox.zph(fit.cox)
+# 
+# 
+# 
+# km <- survfit(Surv(dataset$time,dataset$status) ~ dataset$obstruct)
+# 
+# plot(km,lty = c(3,2), mark.time = FALSE, ylab = "Survival Probability",
+#      xlab = "Time (days)", col=c(1,2), lwd=c(2,2), main="Kaplan-Meier")
+# 
+# legend( "bottomleft", legend = levels(dataset$obstruct), lty = c(3,2), lwd=c(2,2),
+#         col=c(1,2),cex=1, title = "Obstruct", bty = "n", y.intersp=1)
+# 
+# 
+# 
+# 
+# library(timereg)
+# 
+# fit.coxalen <- cox.aalen( Surv(time, status)~
+# 
+#                             prop(rx) +
+#                             obstruct +
+#                             prop(nodes) +
+#                             prop(extent) +
+#                             prop(surg)
+# 
+#                            , data=dataset )
+# 
+# 
+# summary(fit.coxalen)
+# 
+# 
+# 
+# # graficos para hipotesis de proporcionalidad: la linea debe estar dentro de las simulaciones
+# 
+# par(mfrow = c(2,3))
+# plot(fit.coxalen, score=T, cex.main=0.8)
+# 
+# 
+# 
+# 
+# # graficos de las variables que dependen del tiempo
+# 
+# plot(fit.coxalen, conf.band=T, col=c(1,2), main="obstruct", cex.main=0.8)
+# abline(v=700, lty=2)
+# abline(v=1150, lty=2)
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# 
+# ## ----------------------------- SPLIT SAMPLE-----------------------------
+# 
+# 
+# library(MixAll)
+# 
+# data(DebTrivedi)
+# 
+# dataset0 <- DebTrivedi
+# 
+# names(dataset0)
+# 
+# 
+# dataset <- dataset0[,-c(2:5)]
+# names(dataset)
+# 
+# dataset$age <- dataset$age*10
+# 
+# dim(dataset)
+# 
+# 
+# set.seed(1111)
+# 
+# n.all <- nrow(dataset)
+# 
+# train.ind = sample( c(0,1), size = n.all, replace=T, prob=c(0.3,0.7) )
+# table(train.ind)
+# 
+# 
+# xx.train = dataset[ train.ind ==1, ]
+# xx.test  = dataset[ train.ind ==0, ]
+# 
+# 
+# # ajuste en la muestra training
+# fit1 <- glm(ofp ~
+# 
+#               hosp +
+#               health +
+#               numchron +
+#               #adldiff +
+#               region +
+#               age +
+#               black +
+#               gender +
+#               married +
+#               school +
+#               #faminc +
+#               #employed +
+#               privins +
+#               medicaid
+# 
+#             ,family=poisson, data=xx.train)
+# 
+# 
+# fit.pred <- predict(fit1, newdata=xx.test, type="response")
+# 
+# 
+# MsE (xx.test[,"ofp"], fit.pred)
+# 
+# 
+# 
+# # indicador honesto en la muestra de testing
+# fit.pred.train <- round(predict(fit1, newdata=xx.train, type="response"),0)
+# 
+# MsE (xx.train[,"ofp"], fit.pred.train)
+# 
+# 
+# 
+# # -------------------------- bootstraping ---------------------
+# 
+# 
+# library(asaur)
+# 
+# data("pharmacoSmoking")
+# head(pharmacoSmoking)
+# 
+# names(pharmacoSmoking)
+# 
+# library(forcats)
+# pharmacoSmoking$race2 <- fct_collapse(pharmacoSmoking$race, other = c("hispanic","other"), white = "white", black = "black")
+# 
+# dataset <- pharmacoSmoking[,-c(1,2,7,11,12)]
+# 
+# dim(dataset)
+# 
+# ## numbers of samples
+# n.samples = 100
+# 
+# ## sample size
+# n.all = nrow ( dataset )
+# 
+# 
+# f.error  = rep ( NA, n.samples )
+# f.accuracy <- rep ( NA, n.samples )
+# f.auc   = rep ( NA, n.samples )
+# 
+# # cutoff of classification
+# p0 <- 0.6
+# 
+# for ( i in 1:n.samples )
+# {
+# 
+#   ind.boot = sample ( 1:n.all , replace=T )
+# 
+#   xx.train = dataset [ ind.boot , ]
+#   xx.test  = dataset [ - ind.boot , ]
+#   dim(xx.train)
+#   dim(xx.test)
+# 
+#   fit0 <- glm(relapse ~
+#                grp +
+#                age +
+#                gender +
+#                race2 +
+#                employment +
+#                yearsSmoking +
+#                levelSmoking +
+#                priorAttempts +
+#                longestNoSmoke
+# 
+#              , family=binomial(logit), data=xx.train)
+# 
+#   fit <- step(fit0, direcction = "both")
+# 
+# 
+#   # predict probabilities in test
+#   prob.pred.test = predict ( fit , newdata=xx.test , type="response" )
+# 
+#   # classification in test
+#   class.pred.test = as.numeric ( prob.pred.test > p0 )
+# 
+# 
+#   f.error [i] = ErrorRate ( xx.test$relapse, class.pred.test )$Error.rate
+#   f.accuracy [i] = ErrorRate ( xx.test$relapse, class.pred.test )$Accuracy
+#   f.auc [i]   = ROCarea ( xx.test$relapse, prob.pred.test)$AUC
+# }
+# 
+#   mean(f.error)
+# 
+# 
+#   mean(f.accuracy)
+# 
+#   mean(f.auc)
+# 
+# 
+# # ------------------------ validacion cruzada ---------------------
+# 
+# library(asaur)
+# 
+# data("pharmacoSmoking")
+# head(pharmacoSmoking)
+# 
+# names(pharmacoSmoking)
+# 
+# library(forcats)
+# pharmacoSmoking$race2 <- fct_collapse(pharmacoSmoking$race, other = c("hispanic","other"),
+#                                       white = "white", black = "black")
+# names(pharmacoSmoking)
+# 
+# dataset <- pharmacoSmoking[,-c(1,2,7,11,12)]
+# 
+# 
+# 
+# n.cv <- 10
+# n.times <- 30
+# n.all <- nrow(dataset)
+# 
+# # cutoff of classification
+# p0 <- 0.6
+# 
+# f.error <- f.accuracy <- f.auc <- matrix (NA, n.times, n.cv)
+# 
+# 
+# # progress bar
+# pb <- winProgressBar(title = "progress bar", min = 0, max = n.times, width = 300)
+# 
+# 
+# for (times in 1:n.times){
+# 
+#   # sampling
+#   groups <- sample( rep( 1:n.cv, lenght=n.all))
+# 
+#   # cv
+#   for (ind.cv in 1:n.cv){
+# 
+#     setWinProgressBar(pb, times, title=paste( round(times/n.times*100, 0), "% done", times, "/", n.times))
+# 
+#     # datasets
+#     cv.train = dataset[groups != ind.cv , ]
+#     cv.test  = dataset[groups == ind.cv , ]
+# 
+#     fit0 <- glm(relapse ~
+#                   grp +
+#                   age +
+#                   gender +
+#                   race2 +
+#                   employment +
+#                   yearsSmoking +
+#                   levelSmoking +
+#                   priorAttempts +
+#                   longestNoSmoke
+# 
+#                 , family=binomial(logit), data=cv.train)
+# 
+#     fit <- step(fit0, direcction = "both")
+# 
+# 
+#     # predict probabilities
+#     prob.pred.test = predict ( fit , newdata=cv.test , type="response" )
+# 
+# 
+#     # classification
+#     class.pred.test = as.numeric ( prob.pred.test > p0 )
+# 
+#     f.error [times,ind.cv] = ErrorRate ( cv.test$relapse, class.pred.test )$Error.rate
+#     f.accuracy [times,ind.cv] = ErrorRate ( cv.test$relapse, class.pred.test )$Accuracy
+#     f.auc [times,ind.cv]   = ROCarea ( cv.test$relapse, prob.pred.test)$AUC
+# 
+# 
+#   }
+# 
+# }
+# close(pb)
+# 
+# 
+# error.rate <- round(mean(f.error),3)
+# accuracy.rate <- round(mean(f.accuracy),3)
+# 
+# auc_honest <- round(mean(f.auc),3)
+# sd.auc <- sd(as.vector(f.auc))
+# AIC.auc <- round (auc_honest -  1.96*sd.auc, 3)
+# BIC.auc <- round (auc_honest +  1.96*sd.auc, 3)
+# 
+# data.frame(auc_honest=auc_honest, IC95=paste("(",AIC.auc,"-",BIC.auc,")",sep=""),
+#            Err.rate=error.rate, Accuracy.rate=accuracy.rate)
+# 
+# 
+# 
+
+## ----eval=FALSE---------------------------------------------------------------
+# 
+# # ----------------------------- BARRA DE PROGRESO --------------------------
+# 
+# 
+# #number of loop iterations
+# niter <- length(dataset)
+# 
+# # creating process bar outside the loop
+# pb <- winProgressBar(title = "progress bar", min = 0, max = niter, width = 300)
+# 
+# for(i in 1:niter) {
+# 
+# setWinProgressBar(pb, i, title=paste( round(i/niter*100, 0), "% done", i, "/", niter))
+# 
+# # ADD CODE
+# 
+# }
+# close(pb)
+# 
+# # -------------------------------------------
+# 
+# x <- rnorm(100000, mean=90, sd=5)
+# 
+# e <- rnorm(100000, mean=0, sd=1)
+# y <- x + e
+# 
+# dataset <- data.frame(y=y,x=x)
+# 
+# niter <- 1000 # number of iteractions
+# 
+# MSR <- vector()
+# 
+# # creating process bar outside the loop
+# pb <- winProgressBar(title = "progress bar", min = 0, max = niter, width = 300)
+# 
+# for(i in 1:niter){
+# 
+#   setWinProgressBar(pb, i, title=paste( round(i/niter*100, 0), "% done", i, "/", niter))
+# 
+#   ind <- sample(1:n,size=10000,replace=FALSE)
+#   dataset.sub <- dataset[ind,]
+# 
+#   fit.lm <- lm(y ~ x, data=dataset.sub)
+# 
+#   MSR[i] <- (sum(fitted(fit.lm)-y)^2 )/1000
+# 
+# }
+# close(pb)
+# 
+# 
+# mean(MSR)
+# 
+# 
+# # ----------------------------CURVA SUAVIZADA -----------------------------------
+# 
+# smoothSEcurve <- function (yy,xx) {
+# 
+# # is used after a plot call
+# # fit a smooth lowess curve and its CI95%
+# 
+# # make a list of the variables x
+# xx.list <- min(xx) + ( (0:100) / 100) * ( max(xx) - min(xx) )
+# 
+# # fit the loess function at the points (xx,yy)
+# yy.xx <- predict(loess(yy ~ xx), se=T, newdata=data.frame(xx=xx.list))
+# 
+# lines(yy.xx$fit ~ xx.list, lwd=2, col="blue")
+# lines(yy.xx$fit - qt(0.975, yy.xx$df) * yy.xx$se.fit ~ xx.list, lty=2, col="red")
+# lines(yy.xx$fit + qt(0.975, yy.xx$df) * yy.xx$se.fit ~ xx.list, lty=2, col="red")
+# }
+# 
+# 
+# x <- rnorm(1000, mean=10, sd=10)
+# e <- rnorm(1000, mean=0, sd=10)
+# y <- 10 + 0.05*x^2  + e
+# 
+# plot(y ~ x)
+# smoothSEcurve(y,x)
+# 
+# 
+# # ----------------------------- TABULACION DE DATOS ------------------------------
+# 
+# 
+# library(tidyr)
+# library(tables)
+# 
+# df <- data.frame(sex=c(1,1,1,6,6,6), area=c(1,1,2,1,2,2), g.age=c(6,18,8,1,3,3), one=c(1,1,1,1,1,1), delete.var =c(22,44,55,66,77,88))
+# 
+# df
+# 
+# 
+# keeps <- c("g.age","sex","area","one")
+# df2 <- df[keeps]
+# 
+# df2
+# 
+# 
+# agre <- aggregate(one ~ g.age + sex + area , data=df2, FUN=sum)
+# 
+# agre
+# 
+# df.tab <- reshape(agre, timevar="g.age",idvar=c("sex","area"),
+#                      direction="wide")
+# 
+# df.tab
+# 
+# df.tab[is.na(df.tab)] <- 0
+# 
+# df.tab
+# 
+# 
+
