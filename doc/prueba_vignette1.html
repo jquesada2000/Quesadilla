@@ -10,11 +10,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="author" content="Jose Antonio Quesada Rico" />
 
-<meta name="date" content="2024-11-30" />
 
-<title>Bioestadística Básica</title>
+<title>prueba_vignette1</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -338,38 +336,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Bioestadística Básica</h1>
-<h4 class="author">Jose Antonio Quesada Rico</h4>
-<h4 class="date">2024-11-30</h4>
+<h1 class="title toc-ignore">prueba_vignette1</h1>
 
 
 
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting
-syntax for authoring HTML, PDF, and MS Word documents. For more details
-on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be
-generated that includes both content as well as the output of any
-embedded R code chunks within the document. You can embed an R code
-chunk like this:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">summary</span>(cars)</span></code></pre></div>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
-</div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the
-code chunk to prevent printing of the R code that generated the
-plot.</p>
-</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(Quesadilla)</span></code></pre></div>
 
 
 
