@@ -61,13 +61,14 @@ usethis::use_vignette("libro")
 devtools::build_vignettes()
 
 
+devtools::install_github("jquesada2000/Quesadilla")
 
 
+library(Quesadilla)
+help("test.cat")
 
+browseVignettes("Quesadilla")
 
-
-
-
-
+devtools::check() # Verifica que no haya errores
 
 
