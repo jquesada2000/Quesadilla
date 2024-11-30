@@ -4,6 +4,7 @@
 library(markdown)
 library(rmarkdown)
 library(knitr)
+library(pkgdown)
 #
 #
 # knit('libro.Rmd', 'test.md') # creates md file
@@ -24,10 +25,18 @@ library(knitr)
 #
 
 
-
+# construye web
+pkgdown::build_site()
 
 
 rmarkdown::render("libro.Rmd", output_format = "html_document")
 
 
 browseURL(paste('file://', file.path(getwd(),'Libro.html'), sep='')) # open file in browser
+
+
+
+rmarkdown::render("prueba_vignette1.Rmd", output_format = "html_document")
+browseURL(paste('file://', file.path(getwd(),'prueba_vignette1.html'), sep='')) # open file in browser
+
+
